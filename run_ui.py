@@ -10,7 +10,7 @@ from agent import AgentContext
 from initialize import initialize
 from python.helpers.files import get_abs_path
 from python.helpers.print_style import PrintStyle
-from python.helpers.log import Log
+from python.helpers.logA import Log
 from dotenv import load_dotenv
 
 
@@ -245,8 +245,10 @@ async def poll():
 
 #run the internal server
 if __name__ == "__main__":
-
     load_dotenv()
+
+    # Obtener el puerto de la variable de entorno PORT de Render, o usar 10000 como fallback
+    port = int(os.environ.get("PORT", 10000))
     
     # Suppress only request logs but keep the startup messages
     from werkzeug.serving import WSGIRequestHandler
@@ -254,6 +256,5 @@ if __name__ == "__main__":
         def log_request(self, code='-', size='-'):
             pass  # Override to suppress request logging
 
-    # run the server on port from .env
-    port = int(os.environ.get("WEB_UI_PORT", 0)) or None
-    app.run(request_handler=NoRequestLoggingWSGIRequestHandler,port=port)
+    # Ejecutar el servidor
+    app.run(host='0.0.0.0', port=port, request_handler=NoRequestLoggingWSGIRequestHandler)
